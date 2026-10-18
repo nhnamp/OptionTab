@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleIdentifier</key>
+    <string>com.nhaatjnamphan.OptionTab</string>
+    <key>CFBundleName</key>
+    <string>OptionTab</string>
+    <key>CFBundleDisplayName</key>
+    <string>OptionTab</string>
+    <key>CFBundleExecutable</key>
+    <string>OptionTab</string>
+    <!-- Resources/AppIcon.icns. Make it again with: swift tools/make_icon.swift -->
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>0.1.0</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>14.0</string>
+    <!-- Agent app: no Dock icon, no app menu. The status bar item is the only UI besides the switcher. -->
+    <key>LSUIElement</key>
+    <true/>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+</dict>
+</plist>
