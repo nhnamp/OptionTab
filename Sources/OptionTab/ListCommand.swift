@@ -39,9 +39,27 @@ enum ListCommand {
 
         print("Mode: \(PrivateAPIs.canFindWindowsOnAllSpaces ? "all Spaces" : "public APIs only (this Space)")")
         print("App: \(app.localizedName ?? "?") (pid \(app.processIdentifier)), \(windows.count) windows, search \(Int(searchTime * 1000)) ms")
+
+        // For Edge, each line also tells which icon the panel shows: the website icon or the app icon.
+        var iconNotes = Array(repeating: "", count: windows.count)
+        if WindowIcons.isEdge(app) {
+            var favicons: [NSImage?]?
+            let iconStart = Date()
+            WindowIcons().loadFavicons(for: windows) { favicons = $0 }
+            let deadline = Date().addingTimeInterval(5)
+            while favicons == nil, Date() < deadline {
+                RunLoop.main.run(until: Date().addingTimeInterval(0.05))
+            }
+            let found = favicons ?? []
+            iconNotes = windows.indices.map { index in
+                guard index < found.count, let favicon = found[index] else { return " {icon: app}" }
+                return " {icon: website, \(favicon.representations.first?.pixelsWide ?? 0) px}"
+            }
+            print("Website icons: \(found.compactMap { $0 }.count) of \(windows.count) windows, lookup \(Int(Date().timeIntervalSince(iconStart) * 1000)) ms")
+        }
         for (index, window) in windows.enumerated() {
             let id = window.windowId.map(String.init) ?? "-"
-            print("\(index + 1). [\(id)]\(window.isMinimized ? " [minimized]" : "") \(window.title)")
+            print("\(index + 1). [\(id)]\(window.isMinimized ? " [minimized]" : "")\(iconNotes[index]) \(window.title)")
         }
     }
 }

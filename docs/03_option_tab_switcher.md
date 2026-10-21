@@ -1,7 +1,7 @@
 # OptionTab: the Option-Tab window switcher
 
 ## What was done
-OptionTab is a menu bar app. Option-Tab shows the titles of the frontmost app's windows on all Spaces, and the release of Option focuses the selected window. The app uses only the Accessibility permission. It never captures the screen. A live test on this Mac drives the app with synthetic key presses on a throwaway test app.
+OptionTab is a menu bar app. Option-Tab shows the titles of the frontmost app's windows on all Spaces, and the release of Option focuses the selected window. The app needs the Accessibility permission. It never captures the screen. The Edge website icons (see [08_window_icons.md](08_window_icons.md)) also need Full Disk Access. A live test on this Mac drives the app with synthetic key presses on a throwaway test app.
 
 ![The switcher panel](images/03_switcher_panel.png)
 

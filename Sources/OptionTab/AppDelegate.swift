@@ -10,6 +10,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem?
     private let statusLine = NSMenuItem(title: "Starting", action: nil, keyEquivalent: "")
     private let loginItemMenuItem = NSMenuItem(title: "Start at Login", action: #selector(toggleLoginItem), keyEquivalent: "")
+    /// Shown only while macOS blocks the read of Edge's favicons.
+    private let edgeIconsMenuItem = NSMenuItem(title: "Allow Website Icons for Edge…", action: #selector(openFullDiskAccessSettings), keyEquivalent: "")
     private var permissionTimer: Timer?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -32,6 +34,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(.separator())
         loginItemMenuItem.target = self
         menu.addItem(loginItemMenuItem)
+        edgeIconsMenuItem.target = self
+        menu.addItem(edgeIconsMenuItem)
         let settingsItem = NSMenuItem(title: "Open Accessibility Settings…", action: #selector(openAccessibilitySettings), keyEquivalent: "")
         settingsItem.target = self
         menu.addItem(settingsItem)
@@ -140,6 +144,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     /// Shows the current login item state each time the menu opens. The user can change it in System Settings.
     func menuWillOpen(_ menu: NSMenu) {
+        edgeIconsMenuItem.isHidden = !WindowIcons.needsEdgeDataAccess
         guard LoginItem.isInstalledCopy else {
             loginItemMenuItem.title = "Start at Login: install first with ./build.sh --install"
             loginItemMenuItem.state = .off
@@ -169,6 +174,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             try LoginItem.setEnabled(LoginItem.status != .enabled)
         } catch {
             showAlert("Cannot change the login item", error.localizedDescription)
+        }
+    }
+
+    @objc private func openFullDiskAccessSettings() {
+        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
+            NSWorkspace.shared.open(url)
         }
     }
 

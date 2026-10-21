@@ -6,6 +6,7 @@ final class Switcher {
     private let store: WindowStore
     private let hotkeys: Hotkeys
     private let panel = SwitcherPanel()
+    private let icons = WindowIcons()
     /// The app of the switch in progress. It is nil when no switch is in progress.
     private var app: NSRunningApplication?
     private var windows: [SwitcherWindow] = []
@@ -47,7 +48,8 @@ final class Switcher {
         app = frontApp
         windows = list
         selected = first
-        panel.show(titles: list.map(\.title), selected: first)
+        panel.show(titles: list.map(\.title), icons: icons.immediateIcons(for: list, of: frontApp), selected: first)
+        loadFavicons()
         hotkeys.setCancelEnabled(true)
         store.searchIfNeeded(for: frontApp) { [weak self] in self?.reload() }
     }
@@ -66,7 +68,22 @@ final class Switcher {
         guard !list.isEmpty else { return }
         windows = list
         selected = list.firstIndex { isSame($0, current) } ?? min(selected, list.count - 1)
-        panel.show(titles: list.map(\.title), selected: selected)
+        panel.show(titles: list.map(\.title), icons: icons.immediateIcons(for: list, of: app), selected: selected)
+        loadFavicons()
+    }
+
+    /// For Edge, replaces the app icons with the website icons when the background lookup ends.
+    private func loadFavicons() {
+        guard let app, WindowIcons.isEdge(app) else { return }
+        let list = windows
+        icons.loadFavicons(for: list) { [weak self] favicons in
+            // The list can change while the lookup runs. Then the next lookup updates the icons.
+            guard let self, self.app == app, self.windows.count == list.count,
+                  zip(self.windows, list).allSatisfy({ self.isSame($0, $1) }) else { return }
+            for (index, favicon) in favicons.enumerated() {
+                self.panel.setIcon(favicon ?? app.icon, at: index)
+            }
+        }
     }
 
     private func finish(focus: Bool) {
