@@ -8,7 +8,7 @@ Each row starts with an icon: the website's favicon for a Microsoft Edge window,
 
 OptionTab needs the Accessibility permission. It never captures the screen, so macOS shows no purple screen-recording indicator. The Edge website icons also need Full Disk Access, because macOS protects Edge's favicon file. Without it, Edge rows show the Edge icon.
 
-![The switcher panel](docs/images/03_switcher_panel.png)
+![The switcher panel with Edge windows: each row shows the website icon, and the New Tab window shows the Edge icon](docs/images/08_panel_edge.png)
 
 ## Requirements
 - macOS 14 or later
